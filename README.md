@@ -29,7 +29,7 @@ composer require jenawant/smpp
 ### ⚡️Hyperf框架内使用
 
 * 参考 [Tcp Server配置](https://hyperf.wiki/3.1/#/zh-cn/tcp-server) 章节创建业务类，并参考`demo/server.php`中的逻辑完善业务类
-* 修改配置文件config/autoload/smpp.php中`callbacks`业务类路径
+* 执行命令发布配置`php bin/hyperf.php vendor:publish jenawant/smpp`，修改配置文件config/autoload/smpp.php中`callbacks`业务类路径
 * 重启服务
 
 > demo基于配置文件.ini，实际项目可从config/autoload/smpp.php获取配置。
