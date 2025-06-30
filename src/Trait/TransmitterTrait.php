@@ -2,6 +2,7 @@
 
 namespace SMPP3\Trait;
 
+use SMPP3\Schema\NumberAddress;
 use SMPP3\SMPP3Protocol;
 use SMPP3\Util\GSMEncoder;
 
@@ -16,7 +17,7 @@ trait TransmitterTrait
      * @param $text
      * @return array
      */
-    public function submitSm($srcId, $mobile, $text)
+    public function submitSm(NumberAddress $src, NumberAddress $dest, $text)
     {
         //如果字节数超过254，则无法放在short_message字段中，可以通过三种方法解决
         //1.可通过message_payload参数一次行传输 https://smpp.org/SMPP_v3_4_Issue1_2.pdf 61页
@@ -79,7 +80,7 @@ trait TransmitterTrait
 
             $sequenceNums[] = $sequenceNum;
 
-            $pdu = SMPP3Protocol::packSubmitSm($srcId, $mobile, $msg, $sequenceNum, $esmClass, $dataEncoding);
+            $pdu = SMPP3Protocol::packSubmitSm($src, $dest, $msg, $sequenceNum, $esmClass, $dataEncoding);
 
             $this->send($pdu);
         }

@@ -3,6 +3,7 @@
 namespace SMPP3;
 
 use Closure;
+use SMPP3\Schema\NumberAddress;
 use Swoole\Coroutine;
 use SMPP3\Util\Receiver;
 use SMPP3\Util\Transceiver;
@@ -216,16 +217,16 @@ class SMPP3Client
 
     /**
      * submit
-     * @param $mobile
-     * @param $text
-     * @param $ext
+     * @param string $mobile 收件人
+     * @param string $text 内容
+     * @param string $src 发件人
      * @return array
      */
-    public function submit($mobile, $text, $ext)
+    public function submit($mobile, $text, $src)
     {
         $client = $this->transceiver;
 //            $client = $this->transmitter;
 
-        return $client->submitSm($this->config['src_id_prefix'] . $ext, $mobile, $text);
+        return $client->submitSm(new NumberAddress($src,5,0), new NumberAddress($mobile,1,1), $text);
     }
 }
