@@ -21,7 +21,7 @@ abstract class BaseTrans {
     /** @var Channel 接收指令通道 */
     protected $pduChannel;
     /** @var Channel */
-    protected $signalChannel;
+    protected        $signalChannel;
     protected int    $errCode = 0;
     protected string $errMsg  = "";
     
@@ -46,8 +46,8 @@ abstract class BaseTrans {
             'package_body_offset'   => 0,
         ]);
         
-        $this->smpp       = $smpp;
-        $this->pduChannel = new Channel(10000);
+        $this->smpp          = $smpp;
+        $this->pduChannel    = new Channel(10000);
         $this->signalChannel = new Channel(1);
     }
     
@@ -120,26 +120,13 @@ abstract class BaseTrans {
      */
     protected function checkAndGetPdu($timeout = -1) {
         if (!$this->client->isConnected()) {
-            return $this->customError(8, 'the connection is broken');
+            return $this->customError(8, 'the connection is closed');
         }
-        
-        if (($responsePdu = $this->client->recv($timeout)) === false) {
-            //接收错误，如超时 同步客户端错误，不关闭链接
-            
-            if ($this->client->errCode === 104) {
-                $this->customError(8, 'the connection is broken');
-            } else {
-                $this->clientErr(false);
-            }
-            
-            return false;
-        }
-        
-        if ($responsePdu === '') {
+        $responsePdu = $this->client->recv($timeout);
+        if ($responsePdu === '' || $responsePdu === false) {
             //对端主动关闭了tcp链接 同步自定义错误，不关闭链接
-            return $this->customError(8, 'the connection is broken');
+            return $this->clientErr();
         }
-        
         if (strlen($responsePdu) < 16) {
             //login Response pdu长度异常 同步自定义错误，不关闭链接
             return $this->customError(93, 'Incorrect pdu command id');
@@ -197,7 +184,6 @@ abstract class BaseTrans {
         if (($timeout = $this->getSurplusTimeout($timeout)) === false) {
             //断开链接
             $this->customError(110, 'Connection timed', true);
-            
             return self::doHook($fail) ?? false;
         }
         
