@@ -25,7 +25,8 @@
         "php": ">=8.0",
         "ext-swoole": ">=4.4",
         "ext-mbstring": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+      "ext-sockets": "*"
     },
     "config": {
         "optimize-autoloader": true,
