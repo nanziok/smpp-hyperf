@@ -20,12 +20,12 @@
             "email": "jena.want@qq.com"
         }
     ],
-    "version": "1.0.0",
     "minimum-stability": "dev",
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.0",
         "ext-swoole": ">=4.4",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-iconv": "*"
     },
     "config": {
         "optimize-autoloader": true,
