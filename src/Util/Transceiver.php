@@ -115,6 +115,8 @@ class Transceiver extends BaseTrans {
      * close
      */
     public function close() {
+        //发送停止信号量
+        $this->signalChannel->push(1);
         $this->client->close();
     }
 }

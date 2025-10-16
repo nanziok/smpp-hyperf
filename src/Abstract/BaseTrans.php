@@ -20,7 +20,8 @@ abstract class BaseTrans {
     protected $channel;
     /** @var Channel 接收指令通道 */
     protected $pduChannel;
-    
+    /** @var Channel */
+    protected $signalChannel;
     protected int    $errCode = 0;
     protected string $errMsg  = "";
     
@@ -47,6 +48,7 @@ abstract class BaseTrans {
         
         $this->smpp       = $smpp;
         $this->pduChannel = new Channel(10000);
+        $this->signalChannel = new Channel(1);
     }
     
     /**
@@ -281,11 +283,15 @@ abstract class BaseTrans {
     }
     
     /**
-     * recv
+     * listen
      */
     public function listen(): void {
         $this->isListening = true;
         while (true) {
+            //停止监听信号量
+            if ($this->signalChannel->pop(0.1)) {
+                break;
+            }
             //recv出错
             if (($responsePdu = $this->checkAndGetPdu()) === false) {
                 //如果错误是110或者8则断开链接其他情况不断开
