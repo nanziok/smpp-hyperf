@@ -19,7 +19,7 @@ trait EnquireLinkTrait
             $enquireInterval = $this->smpp->getConfig('active_test_interval');
 
             //先休眠一个间隔时间
-            while ($enquireInterval--) {
+            while ($enquireInterval-- > 0) {
                 Coroutine::sleep(1);
 
                 //如果我方主动关闭了则直接停止
@@ -31,17 +31,13 @@ trait EnquireLinkTrait
             //如果对端探活在一个时间间隔内则继续休眠，并且重置我方探活
             if (time() - $this->smscEnquireLikTime < $this->smpp->getConfig('active_test_interval')) {
                 $this->waitEnquireLinkResp = 0;
-
                 continue;
             }
-
-
             //发送探活
             $this->send(SMPP3Protocol::packEnquireLink());
             if (++$this->waitEnquireLinkResp > $this->smpp->getConfig('active_test_num')) {
                 //如果探活未回应次数大于配置则断开链接发送unbind
                 $this->unbind();
-
                 return;
             }
         }

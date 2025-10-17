@@ -129,7 +129,7 @@ abstract class BaseTrans {
         }
         if ($this->smpp->getConfig("debug")) {
             $headerArr = SMPP3Protocol::unpackHeader(substr($responsePdu, 0, 16));
-            echo "SMPP收到数据:" . json_encode($headerArr, true) . PHP_EOL;
+            echo "SMPP收到数据:" . json_encode($headerArr) . PHP_EOL;
         }
         if (strlen($responsePdu) < 16) {
             //login Response pdu长度异常 同步自定义错误，不关闭链接
@@ -238,7 +238,7 @@ abstract class BaseTrans {
                             }else{
                                 $headerArr = SMPP3Protocol::unpackHeader(substr($data, 0, 16));
                             }
-                            echo "SMPP发送数据:" . var_export($headerArr, true) . PHP_EOL;
+                            echo "SMPP发送数据:" . json_encode($headerArr) . PHP_EOL;
                         }
                         if (is_string($data)) {
                             $this->client->send($data);
