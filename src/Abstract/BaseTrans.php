@@ -127,6 +127,10 @@ abstract class BaseTrans {
             //对端主动关闭了tcp链接 同步自定义错误，不关闭链接
             return $this->clientErr();
         }
+        if ($this->smpp->getConfig("debug")) {
+            $headerArr = SMPP3Protocol::unpackHeader(substr($responsePdu, 0, 16));
+            echo "SMPP收到数据:" . json_encode($headerArr, true) . PHP_EOL;
+        }
         if (strlen($responsePdu) < 16) {
             //login Response pdu长度异常 同步自定义错误，不关闭链接
             return $this->customError(93, 'Incorrect pdu command id');
@@ -228,16 +232,20 @@ abstract class BaseTrans {
                         }
                         
                         $data = $this->channel->pop();
-                        
+                        if ($this->smpp->getConfig('debug')) {
+                            if (is_array($data)) {
+                                $headerArr = SMPP3Protocol::unpackHeader(substr($data[0], 0, 16));
+                            }else{
+                                $headerArr = SMPP3Protocol::unpackHeader(substr($data, 0, 16));
+                            }
+                            echo "SMPP发送数据:" . var_export($headerArr, true) . PHP_EOL;
+                        }
                         if (is_string($data)) {
                             $this->client->send($data);
                         } else {
                             $this->client->send($data[0]);
-                            
                             $this->client->close();
-                            
                             $this->channel->close();
-                            
                             $this->channel = null;
                         }
                     }
@@ -254,7 +262,6 @@ abstract class BaseTrans {
     public function unbind() {
         if ($this->client->errCode !== 8 && $this->client->errCode !== 110) {
             $pdu = SMPP3Protocol::packUnbind();
-            
             $this->send([$pdu]);
         }
     }

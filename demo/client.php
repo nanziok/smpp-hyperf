@@ -63,7 +63,7 @@ Coroutine\run(function () use ($config) {
             [
                 'sequence_start'       => $i * 100000,
                 'sequence_end'         => 100000000,   //在这个区间循环使用id，重新登录时候将从新在sequence_start开始
-                'active_test_interval' => 100000000.5, //1.5s检测一次
+                'active_test_interval' => 20.5, //1.5s检测一次
                 'active_test_num'      => 3,           //10次连续失败就切断连接
                 'service_id'           => "831948",    //业务类型
                 'src_id_prefix'        => "10690",     //src_id的前缀+submit的扩展号就是整个src_id
