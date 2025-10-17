@@ -84,6 +84,7 @@ class SMPP3Client {
         $config['addr_ton']          = empty($config['addr_ton']) ? 1 : (int)$config['addr_ton'];
         $config['addr_npi']          = empty($config['addr_npi']) ? 1 : (int)$config['addr_npi'];
         $config['address_range']     = empty($config['address_range']) ? '' : $config['address_range'];
+        $config['debug']             = empty($config['debug']) ? 0 : 1;
         //系统
         $config['system_type'] = empty($config['system_type']) ? 'WWW' : $config['system_type'];
         //模式
@@ -108,7 +109,7 @@ class SMPP3Client {
      */
     public function login($ip, $port, $account, $pwd, $timeout) {
         $this->startBindTime = time();
-        $mode = $this->getConfig("mode", "transceiver");
+        $mode                = $this->getConfig("mode", "transceiver");
         switch ($mode) {
             case "transceiver":
                 //接收一体模式
